@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>บันทึกออเดอร์ Shinchita</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f7f7f8;--card:#fff;--text:#111;--muted:#6b7280;--line:#e5e7eb;}
+    *{box-sizing:border-box}
+    body{font-family:'Kanit',system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text);margin:0}
+    .wrap{max-width:920px;margin:24px auto;padding:0 16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.03);padding:18px 16px;margin:14px 0}
+    h1{font-size:22px;margin:14px 0 8px}
+    h2{font-size:18px;margin:0 0 8px}
+    h3{font-size:16px;margin:10px 0 6px}
+    label{display:block;font-size:14px;margin:6px 0 4px}
+    input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    textarea{resize:vertical}
+    .row{display:grid;gap:12px}
+    .row-2{grid-template-columns:1fr 1fr}
+    .row-3{grid-template-columns:1fr 1fr 1fr}
+    .muted{color:var(--muted);font-size:12px}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600}
+    .primary{background:#111;color:#fff}
+    .ghost{background:#fff;border:1px solid var(--line)}
+    .bar{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin-right:6px;font-size:12px;color:#374151}
+    .ok{color:#16a34a}
+    .err{color:#b91c1c}
+    .total{font-weight:600}
+    .badge{background:#111;color:#fff;border-radius:999px;padding:2px 8px;margin-left:8px;font-size:12px}
+    @media (max-width:720px){.row-2,.row-3{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>บันทึกออเดอร์ <span class="badge">Production</span></h1>
+  <div class="card">
+    <div class="muted">คำแนะนำ: กรอกข้อมูลให้ครบ แล้วกด “ส่งออเดอร์” ระบบจะบันทึกลง Google Sheet ให้เอง</div>
+  </div>
+
+  <form id="f" class="card">
+    <h2>ข้อมูลลูกค้า</h2>
+    <div class="row row-2">
+      <div><label>ชื่อ</label><input name="first_name" required></div>
+      <div><label>นามสกุล</label><input name="last_name" required></div>
+    </div>
+    <label>ที่อยู่</label>
+    <textarea name="address" rows="2" required></textarea>
+    <div class="row row-2">
+      <div>
+        <label>เบอร์โทร</label>
+        <input name="phone" placeholder="0891234567" required>
+        <div class="muted">ระบบจะใช้เป็น Primary ID (เก็บเฉพาะตัวเลขอัตโนมัติ)</div>
+      </div>
+      <div>
+        <label>ยอดเงิน (บาท)</label>
+        <input name="amount" type="number" step="0.01" min="0" required>
+      </div>
+    </div>
+    <div class="row row-2">
+      <div>
+        <label>วิธีชำระ</label>
+        <select name="payment_method">
+          <option value="TRANSFER">โอน</option>
+          <option value="COD">COD</option>
+        </select>
+      </div>
+      <div>
+        <label>หมายเหตุ (ถ้ามี)</label>
+        <input name="note" placeholder="เช่น ส่งด่วน/เก็บเงินปลายทาง">
+      </div>
+    </div>
+
+    <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+
+    <h2>สินค้าและรสชาติ (กรอกจำนวนห่อ)</h2>
+
+    <h3>สาหร่ายม้วน (roll)</h3>
+    <div class="grid3">
+      <div><label>หมาล่า</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="หมาล่า"></div>
+      <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="ชีส"></div>
+      <div><label>บาร์บีคิว</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="บาร์บีคิว"></div>
+    </div>
+
+    <h3>สาหร่ายทอด (fried)</h3>
+    <div class="grid3">
+      <div><label>คลาสสิก</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="คลาสสิก"></div>
+      <div><label>สาหร่ายทะเล</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="สาหร่ายทะเล"></div>
+      <div><label>บาร์บีคิว</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="บาร์บีคิว"></div>
+    </div>
+
+    <h3>สาหร่ายชุปแป้งทอด (battered)</h3>
+    <div class="grid3">
+      <div><label>ออริจินัล</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="ออริจินัล"></div>
+      <div><label>สไปซี่</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="สไปซี่"></div>
+      <div><label>กระเทียมพริกไทย</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="กระเทียมพริกไทย"></div>
+    </div>
+
+    <div class="card" style="background:#fafafa;border-style:dashed">
+      <div id="summary" class="muted">ยังไม่มียอดห่อ</div>
+    </div>
+
+    <div class="bar">
+      <button type="button" class="btn ghost" id="btnClear">ล้างฟอร์ม</button>
+      <button type="submit" class="btn primary" id="btnSubmit">ส่งออเดอร์</button>
+    </div>
+
+    <div id="msg" style="margin-top:10px"></div>
+  </form>
+
+  <div class="card">
+    <h2>วิธีใช้งาน</h2>
+    <ol>
+      <li>เปิด n8n → เปิด Workflow ให้เป็น <b>Active</b></li>
+      <li>คัดลอก <b>Production URL</b> ของ Webhook (<code>/webhook/order-intake</code>)</li>
+      <li>นำไปแทนในตัวแปร <code>WEBHOOK_URL</code> ด้านล่างในสคริปต์</li>
+      <li>เปิดไฟล์นี้ในเบราว์เซอร์ กรอก แล้วกด “ส่งออเดอร์”</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+/** 🔧 ตั้งค่า URL ของ Webhook (Production) ตรงนี้ */
+const WEBHOOK_URL = "https://YOUR_DOMAIN/webhook/order-intake";  // ← ใส่ของจริง
+
+const form = document.getElementById('f');
+const msg  = document.getElementById('msg');
+const btnSubmit = document.getElementById('btnSubmit');
+const summary = document.getElementById('summary');
+const btnClear = document.getElementById('btnClear');
+
+/** สรุปจำนวนห่อแบบเรียลไทม์ */
+function updateSummary(){
+  const inputs = Array.from(document.querySelectorAll('input[data-ptype]'));
+  const items = inputs
+    .map(el => ({ product_type: el.dataset.ptype, flavor: el.dataset.flavor, packs: Number(el.value || 0) }))
+    .filter(x => x.packs > 0);
+  if(!items.length){ summary.innerHTML = 'ยังไม่มียอดห่อ'; return; }
+  const total = items.reduce((s,x)=>s+x.packs,0);
+  const lines = items.map(x=>`${x.product_type} – ${x.flavor}: ${x.packs} ห่อ`);
+  summary.innerHTML = `<span class="total">รวม ${total} ห่อ</span><br>${lines.join('<br>')}`;
+}
+document.querySelectorAll('input[data-ptype]').forEach(el => el.addEventListener('input', updateSummary));
+updateSummary();
+
+btnClear.addEventListener('click', ()=>{
+  form.reset();
+  updateSummary();
+  msg.innerHTML = '';
+});
+
+/** ส่งข้อมูลไป n8n */
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  msg.innerHTML = '';
+
+  // เก็บข้อมูล
+  const fd = new FormData(form);
+  const inputs = Array.from(document.querySelectorAll('input[data-ptype]'));
+  const rawPhone = String(fd.get('phone')||'');
+  const phoneDigits = rawPhone.replace(/\D/g,'');     // เก็บเฉพาะตัวเลข ให้ตรงกับ Normalize node
+
+  const items = inputs.map(el => ({
+    product_type: el.dataset.ptype,
+    flavor: el.dataset.flavor,
+    packs: Number(el.value || 0)
+  })).filter(x => x.packs > 0);
+
+  if(items.length === 0){
+    msg.innerHTML = '<div class="err">โปรดระบุจำนวนห่ออย่างน้อย 1 รายการ</div>';
+    return;
+  }
+
+  const payload = {
+    first_name: fd.get('first_name'),
+    last_name: fd.get('last_name'),
+    address: fd.get('address'),
+    phone: phoneDigits,
+    amount: Number(fd.get('amount')),
+    payment_method: fd.get('payment_method'), // TRANSFER / COD
+    items
+  };
+
+  // ป้องกันกดซ้ำ
+  btnSubmit.disabled = true; btnSubmit.textContent = 'กำลังส่ง...';
+
+  try{
+    const res = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    // n8n Respond node จะตอบ { ok: true, orderId: "..." }
+    const data = await res.json().catch(()=> ({}));
+
+    if(res.ok && data && data.ok){
+      msg.innerHTML = `<div class="ok">บันทึกสำเร็จ! เลขออเดอร์: <b>${data.orderId}</b></div>`;
+      form.reset(); updateSummary();
+    }else{
+      msg.innerHTML = `<div class="err">ส่งไม่สำเร็จ: ${res.status} ${res.statusText} ${data?.message||''}</div>`;
+    }
+  }catch(err){
+    msg.innerHTML = `<div class="err">เกิดข้อผิดพลาดในการเชื่อมต่อ: ${err}</div>`;
+  }finally{
+    btnSubmit.disabled = false; btnSubmit.textContent = 'ส่งออเดอร์';
+  }
+});
+</script>
+</body>
+</html>
