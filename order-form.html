@@ -218,35 +218,25 @@ btnAutofill.addEventListener('click', ()=>{
 
 /** Parse text to extract data */
 function parseAutofillData(text) {
-  const data = {};
+  const data = { flavors: {} };
   const lines = text.split('\n').map(l => l.trim()).filter(l => l);
 
-  // Field mapping (Thai and English)
-  const fieldMap = {
-    'ชื่อ': 'first_name',
-    'first_name': 'first_name',
-    'firstname': 'first_name',
-    'นามสกุล': 'last_name',
-    'last_name': 'last_name',
-    'lastname': 'last_name',
-    'ที่อยู่': 'address',
-    'address': 'address',
-    'เบอร์': 'phone',
-    'เบอร์โทร': 'phone',
-    'phone': 'phone',
-    'tel': 'phone',
-    'ยอดเงิน': 'amount',
-    'amount': 'amount',
-    'total': 'amount',
-    'ราคา': 'amount',
-    'วิธีชำระ': 'payment_method',
-    'payment': 'payment_method',
-    'หมายเหตุ': 'note',
-    'note': 'note',
+  let addressLines = [];
+  let nameFound = false;
+
+  // Product type keywords
+  const productTypes = {
+    'ชุบแป้งทอด': 'battered',
+    'ชุปแป้งทอด': 'battered',
+    'battered': 'battered',
+    'ม้วน': 'roll',
+    'roll': 'roll',
+    'ทอด': 'fried',
+    'fried': 'fried',
   };
 
-  // Flavor mapping (support various spellings)
-  const flavorMap = {
+  // Flavor keywords with flexible matching
+  const flavorKeywords = {
     'หมาล่า': { ptype: 'roll', flavor: 'หมาล่า' },
     'mala': { ptype: 'roll', flavor: 'หมาล่า' },
     'ชีส': { ptype: 'roll', flavor: 'ชีส' },
@@ -258,37 +248,112 @@ function parseAutofillData(text) {
     'classic': { ptype: 'fried', flavor: 'คลาสสิก' },
     'สาหร่ายทะเล': { ptype: 'fried', flavor: 'สาหร่ายทะเล' },
     'seaweed': { ptype: 'fried', flavor: 'สาหร่ายทะเล' },
+    'ทะเล': { ptype: 'fried', flavor: 'สาหร่ายทะเล' },
     'ออริจินัล': { ptype: 'battered', flavor: 'ออริจินัล' },
     'original': { ptype: 'battered', flavor: 'ออริจินัล' },
+    'ดั้งเดิม': { ptype: 'battered', flavor: 'ออริจินัล' },
     'สไปซี่': { ptype: 'battered', flavor: 'สไปซี่' },
     'spicy': { ptype: 'battered', flavor: 'สไปซี่' },
+    'เผ็ด': { ptype: 'battered', flavor: 'สไปซี่' },
     'กระเทียมพริกไทย': { ptype: 'battered', flavor: 'กระเทียมพริกไทย' },
     'garlic': { ptype: 'battered', flavor: 'กระเทียมพริกไทย' },
+    'กระเทียม': { ptype: 'battered', flavor: 'กระเทียมพริกไทย' },
   };
 
-  lines.forEach(line => {
-    // Try to match pattern: "key: value" or "key value"
-    const colonMatch = line.match(/^([^:：]+)[:：]\s*(.+)$/);
-    const spaceMatch = line.match(/^(\S+)\s+(.+)$/);
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const lowerLine = line.toLowerCase();
 
-    if (colonMatch || spaceMatch) {
-      const [, rawKey, rawValue] = colonMatch || spaceMatch;
-      const key = rawKey.trim().toLowerCase();
-      const value = rawValue.trim();
+    // Extract phone number (10 digits)
+    const phoneMatch = line.match(/(?:โทร|tel|phone)?\s*:?\s*(\d{10})/i) || line.match(/(\d{10})/);
+    if (phoneMatch && !data.phone) {
+      data.phone = phoneMatch[1];
+      continue;
+    }
 
-      // Check if it's a standard field
-      if (fieldMap[key]) {
-        data[fieldMap[key]] = value;
-      }
-      // Check if it's a flavor/product
-      else if (flavorMap[key]) {
-        const { ptype, flavor } = flavorMap[key];
-        const packs = parseInt(value.replace(/[^\d]/g, '')) || 0;
-        if (!data.flavors) data.flavors = {};
-        data.flavors[`${ptype}-${flavor}`] = packs;
+    // Extract amount (with B or บาท)
+    const amountMatch = line.match(/(\d+(?:,\d{3})*(?:\.\d{2})?)\s*(?:B|บาท|baht)/i);
+    if (amountMatch && !data.amount) {
+      data.amount = amountMatch[1].replace(/,/g, '');
+      continue;
+    }
+
+    // Extract payment method
+    if ((lowerLine.includes('โอน') || lowerLine.includes('transfer')) && !data.payment_method) {
+      data.payment_method = 'TRANSFER';
+    } else if ((lowerLine.includes('cod') || lowerLine.includes('ปลายทาง')) && !data.payment_method) {
+      data.payment_method = 'COD';
+    }
+
+    // Extract product and flavor
+    // Pattern: "ชุบแป้งทอด เจ" or "รสดั้งเดิม 40 ห่อ"
+    let foundProduct = false;
+    for (const [keyword, ptype] of Object.entries(productTypes)) {
+      if (lowerLine.includes(keyword)) {
+        foundProduct = true;
+        // Look for flavor in this line and next line
+        for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
+          if (lowerLine.includes(flavorKey.toLowerCase())) {
+            // Extract quantity
+            const qtyMatch = line.match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
+            if (qtyMatch) {
+              const qty = parseInt(qtyMatch[1]);
+              const key = `${ptype}-${flavorData.flavor}`;
+              data.flavors[key] = qty;
+            }
+            break;
+          }
+        }
+
+        // If no flavor found in this line, check next line
+        if (i + 1 < lines.length && Object.keys(data.flavors).length === 0) {
+          const nextLine = lines[i + 1].toLowerCase();
+          for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
+            if (nextLine.includes(flavorKey.toLowerCase())) {
+              const qtyMatch = lines[i + 1].match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
+              if (qtyMatch) {
+                const qty = parseInt(qtyMatch[1]);
+                const key = `${ptype}-${flavorData.flavor}`;
+                data.flavors[key] = qty;
+              }
+              i++; // Skip next line as we've processed it
+              break;
+            }
+          }
+        }
+        break;
       }
     }
-  });
+
+    // Extract name (usually first 1-2 lines, may have ~ or special chars)
+    if (!nameFound && !foundProduct && !phoneMatch && !amountMatch && i < 3) {
+      // Remove numbers, special chars for name detection
+      const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/[~]/g, ' ').trim();
+      const nameParts = cleanLine.split(/\s+/).filter(p => p && !p.match(/^\d+$/));
+
+      if (nameParts.length > 0 && !lowerLine.includes('ไปรษณีย์') && !lowerLine.includes('post')) {
+        data.first_name = nameParts[0];
+        if (nameParts.length > 1) {
+          data.last_name = nameParts.slice(1).join(' ');
+        }
+        nameFound = true;
+        continue;
+      }
+    }
+
+    // Collect address lines (between name and phone)
+    if (nameFound && !data.phone && !foundProduct) {
+      // Skip lines with FB:, Fb:, facebook
+      if (!lowerLine.startsWith('fb:') && !lowerLine.startsWith('facebook')) {
+        addressLines.push(line);
+      }
+    }
+  }
+
+  // Combine address lines
+  if (addressLines.length > 0) {
+    data.address = addressLines.join(' ');
+  }
 
   return data;
 }
