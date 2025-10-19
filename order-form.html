@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#f7f7f8;--card:#fff;--text:#111;--muted:#6b7280;--line:#e5e7eb;}
+    :root{--bg:#f7f7f8;--card:#fff;--text:#111;--muted:#6b7280;--line:#e5e7eb;--primary:#3b82f6;}
     *{box-sizing:border-box}
     body{font-family:'Kanit',system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text);margin:0}
     .wrap{max-width:920px;margin:24px auto;padding:0 16px}
@@ -25,6 +25,7 @@
     .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
     .btn{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:600}
     .primary{background:#111;color:#fff}
+    .secondary{background:var(--primary);color:#fff}
     .ghost{background:#fff;border:1px solid var(--line)}
     .bar{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
     .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;margin-right:6px;font-size:12px;color:#374151}
@@ -32,6 +33,7 @@
     .err{color:#b91c1c}
     .total{font-weight:600}
     .badge{background:#111;color:#fff;border-radius:999px;padding:2px 8px;margin-left:8px;font-size:12px}
+    .autofill-card{background:#eff6ff;border:2px dashed var(--primary)}
     @media (max-width:720px){.row-2,.row-3{grid-template-columns:1fr}}
   </style>
 </head>
@@ -39,39 +41,59 @@
 <div class="wrap">
   <h1>บันทึกออเดอร์ <span class="badge">Production</span></h1>
   <div class="card">
-    <div class="muted">คำแนะนำ: กรอกข้อมูลให้ครบ แล้วกด “ส่งออเดอร์” ระบบจะบันทึกลง Google Sheet ให้เอง</div>
+    <div class="muted">คำแนะนำ: กรอกข้อมูลให้ครบ แล้วกด "ส่งออเดอร์" ระบบจะบันทึกลง Google Sheet ให้เอง</div>
+  </div>
+
+  <!-- Auto-fill Card -->
+  <div class="card autofill-card">
+    <h2>✨ วางข้อมูลเพื่อกรอกอัตโนมัติ</h2>
+    <label>วางข้อความที่คัดลอกมาในช่องนี้ (รองรับหลายรูปแบบ)</label>
+    <textarea id="autofillInput" rows="8" placeholder="ตัวอย่าง:
+ชื่อ: สมชาย
+นามสกุล: ใจดี
+ที่อยู่: 123 ถ.สุขุมวิท กทม.
+เบอร์: 0891234567
+ยอดเงิน: 500
+หมาล่า: 2
+บาร์บีคิว: 3
+สาหร่ายทะเล: 1"></textarea>
+    <div class="bar">
+      <button type="button" class="btn secondary" id="btnAutofill">กรอกอัตโนมัติ</button>
+      <button type="button" class="btn ghost" id="btnClearAutofill">ล้างช่อง</button>
+    </div>
+    <div id="autofillMsg" style="margin-top:10px"></div>
   </div>
 
   <form id="f" class="card">
     <h2>ข้อมูลลูกค้า</h2>
     <div class="row row-2">
-      <div><label>ชื่อ</label><input name="first_name" required></div>
-      <div><label>นามสกุล</label><input name="last_name" required></div>
+      <div><label>ชื่อ</label><input name="first_name" id="first_name" required></div>
+      <div><label>นามสกุล</label><input name="last_name" id="last_name" required></div>
     </div>
     <label>ที่อยู่</label>
-    <textarea name="address" rows="2" required></textarea>
+    <textarea name="address" id="address" rows="2" required></textarea>
     <div class="row row-2">
       <div>
         <label>เบอร์โทร</label>
-        <input name="phone" placeholder="0891234567" required>
+        <input name="phone" id="phone" placeholder="0891234567" required>
         <div class="muted">ระบบจะใช้เป็น Primary ID (เก็บเฉพาะตัวเลขอัตโนมัติ)</div>
       </div>
       <div>
         <label>ยอดเงิน (บาท)</label>
-        <input name="amount" type="number" step="0.01" min="0" required>
+        <input name="amount" id="amount" type="number" step="0.01" min="0" required>
       </div>
     </div>
     <div class="row row-2">
       <div>
         <label>วิธีชำระ</label>
-        <select name="payment_method">
+        <select name="payment_method" id="payment_method">
           <option value="TRANSFER">โอน</option>
           <option value="COD">COD</option>
         </select>
       </div>
       <div>
         <label>หมายเหตุ (ถ้ามี)</label>
-        <input name="note" placeholder="เช่น ส่งด่วน/เก็บเงินปลายทาง">
+        <input name="note" id="note" placeholder="เช่น ส่งด่วน/เก็บเงินปลายทาง">
       </div>
     </div>
 
@@ -81,23 +103,23 @@
 
     <h3>สาหร่ายม้วน (roll)</h3>
     <div class="grid3">
-      <div><label>หมาล่า</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="หมาล่า"></div>
-      <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="ชีส"></div>
-      <div><label>บาร์บีคิว</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="บาร์บีคิว"></div>
+      <div><label>หมาล่า</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="หมาล่า" id="roll-หมาล่า"></div>
+      <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="ชีส" id="roll-ชีส"></div>
+      <div><label>บาร์บีคิว</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="บาร์บีคิว" id="roll-บาร์บีคิว"></div>
     </div>
 
     <h3>สาหร่ายทอด (fried)</h3>
     <div class="grid3">
-      <div><label>คลาสสิก</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="คลาสสิก"></div>
-      <div><label>สาหร่ายทะเล</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="สาหร่ายทะเล"></div>
-      <div><label>บาร์บีคิว</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="บาร์บีคิว"></div>
+      <div><label>คลาสสิก</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="คลาสสิก" id="fried-คลาสสิก"></div>
+      <div><label>สาหร่ายทะเล</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="สาหร่ายทะเล" id="fried-สาหร่ายทะเล"></div>
+      <div><label>บาร์บีคิว</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="บาร์บีคิว" id="fried-บาร์บีคิว"></div>
     </div>
 
     <h3>สาหร่ายชุปแป้งทอด (battered)</h3>
     <div class="grid3">
-      <div><label>ออริจินัล</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="ออริจินัล"></div>
-      <div><label>สไปซี่</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="สไปซี่"></div>
-      <div><label>กระเทียมพริกไทย</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="กระเทียมพริกไทย"></div>
+      <div><label>ออริจินัล</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="ออริจินัล" id="battered-ออริจินัล"></div>
+      <div><label>สไปซี่</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="สไปซี่" id="battered-สไปซี่"></div>
+      <div><label>กระเทียมพริกไทย</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="กระเทียมพริกไทย" id="battered-กระเทียมพริกไทย"></div>
     </div>
 
     <div class="card" style="background:#fafafa;border-style:dashed">
@@ -118,8 +140,20 @@
       <li>เปิด n8n → เปิด Workflow ให้เป็น <b>Active</b></li>
       <li>คัดลอก <b>Production URL</b> ของ Webhook (<code>/webhook/order-intake</code>)</li>
       <li>นำไปแทนในตัวแปร <code>WEBHOOK_URL</code> ด้านล่างในสคริปต์</li>
-      <li>เปิดไฟล์นี้ในเบราว์เซอร์ กรอก แล้วกด “ส่งออเดอร์”</li>
+      <li>เปิดไฟล์นี้ในเบราว์เซอร์ กรอก แล้วกด "ส่งออเดอร์"</li>
     </ol>
+    <h3>✨ การใช้ฟีเจอร์กรอกอัตโนมัติ</h3>
+    <ol>
+      <li>คัดลอกข้อมูลจากที่ต้องการ (LINE, Email, etc.)</li>
+      <li>วางในช่อง "วางข้อมูลเพื่อกรอกอัตโนมัติ"</li>
+      <li>กดปุ่ม "กรอกอัตโนมัติ" ระบบจะแยกข้อมูลและกรอกให้อัตโนมัติ</li>
+    </ol>
+    <h4>รูปแบบที่รองรับ:</h4>
+    <ul>
+      <li><code>ชื่อ: สมชาย</code> หรือ <code>ชื่อ สมชาย</code></li>
+      <li><code>หมาล่า: 2</code> หรือ <code>หมาล่า 2</code> หรือ <code>หมาล่า 2 ห่อ</code></li>
+      <li>ระบบจะอ่านทั้งไทยและอังกฤษ (first_name, last_name, etc.)</li>
+    </ul>
   </div>
 </div>
 
@@ -132,6 +166,10 @@ const msg  = document.getElementById('msg');
 const btnSubmit = document.getElementById('btnSubmit');
 const summary = document.getElementById('summary');
 const btnClear = document.getElementById('btnClear');
+const autofillInput = document.getElementById('autofillInput');
+const btnAutofill = document.getElementById('btnAutofill');
+const btnClearAutofill = document.getElementById('btnClearAutofill');
+const autofillMsg = document.getElementById('autofillMsg');
 
 /** สรุปจำนวนห่อแบบเรียลไทม์ */
 function updateSummary(){
@@ -152,6 +190,137 @@ btnClear.addEventListener('click', ()=>{
   updateSummary();
   msg.innerHTML = '';
 });
+
+btnClearAutofill.addEventListener('click', ()=>{
+  autofillInput.value = '';
+  autofillMsg.innerHTML = '';
+});
+
+/** Auto-fill Logic */
+btnAutofill.addEventListener('click', ()=>{
+  const text = autofillInput.value.trim();
+  if(!text){
+    autofillMsg.innerHTML = '<div class="err">โปรดวางข้อมูลก่อนกดกรอกอัตโนมัติ</div>';
+    return;
+  }
+
+  autofillMsg.innerHTML = '<div class="muted">กำลังประมวลผล...</div>';
+
+  try {
+    const data = parseAutofillData(text);
+    fillFormWithData(data);
+    autofillMsg.innerHTML = `<div class="ok">กรอกข้อมูลสำเร็จ! พบ ${Object.keys(data).length} ฟิลด์</div>`;
+    updateSummary();
+  } catch(err) {
+    autofillMsg.innerHTML = `<div class="err">เกิดข้อผิดพลาด: ${err.message}</div>`;
+  }
+});
+
+/** Parse text to extract data */
+function parseAutofillData(text) {
+  const data = {};
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+
+  // Field mapping (Thai and English)
+  const fieldMap = {
+    'ชื่อ': 'first_name',
+    'first_name': 'first_name',
+    'firstname': 'first_name',
+    'นามสกุล': 'last_name',
+    'last_name': 'last_name',
+    'lastname': 'last_name',
+    'ที่อยู่': 'address',
+    'address': 'address',
+    'เบอร์': 'phone',
+    'เบอร์โทร': 'phone',
+    'phone': 'phone',
+    'tel': 'phone',
+    'ยอดเงิน': 'amount',
+    'amount': 'amount',
+    'total': 'amount',
+    'ราคา': 'amount',
+    'วิธีชำระ': 'payment_method',
+    'payment': 'payment_method',
+    'หมายเหตุ': 'note',
+    'note': 'note',
+  };
+
+  // Flavor mapping (support various spellings)
+  const flavorMap = {
+    'หมาล่า': { ptype: 'roll', flavor: 'หมาล่า' },
+    'mala': { ptype: 'roll', flavor: 'หมาล่า' },
+    'ชีส': { ptype: 'roll', flavor: 'ชีส' },
+    'cheese': { ptype: 'roll', flavor: 'ชีส' },
+    'บาร์บีคิว': { ptype: 'roll', flavor: 'บาร์บีคิว' },
+    'bbq': { ptype: 'roll', flavor: 'บาร์บีคิว' },
+    'barbecue': { ptype: 'roll', flavor: 'บาร์บีคิว' },
+    'คลาสสิก': { ptype: 'fried', flavor: 'คลาสสิก' },
+    'classic': { ptype: 'fried', flavor: 'คลาสสิก' },
+    'สาหร่ายทะเล': { ptype: 'fried', flavor: 'สาหร่ายทะเล' },
+    'seaweed': { ptype: 'fried', flavor: 'สาหร่ายทะเล' },
+    'ออริจินัล': { ptype: 'battered', flavor: 'ออริจินัล' },
+    'original': { ptype: 'battered', flavor: 'ออริจินัล' },
+    'สไปซี่': { ptype: 'battered', flavor: 'สไปซี่' },
+    'spicy': { ptype: 'battered', flavor: 'สไปซี่' },
+    'กระเทียมพริกไทย': { ptype: 'battered', flavor: 'กระเทียมพริกไทย' },
+    'garlic': { ptype: 'battered', flavor: 'กระเทียมพริกไทย' },
+  };
+
+  lines.forEach(line => {
+    // Try to match pattern: "key: value" or "key value"
+    const colonMatch = line.match(/^([^:：]+)[:：]\s*(.+)$/);
+    const spaceMatch = line.match(/^(\S+)\s+(.+)$/);
+
+    if (colonMatch || spaceMatch) {
+      const [, rawKey, rawValue] = colonMatch || spaceMatch;
+      const key = rawKey.trim().toLowerCase();
+      const value = rawValue.trim();
+
+      // Check if it's a standard field
+      if (fieldMap[key]) {
+        data[fieldMap[key]] = value;
+      }
+      // Check if it's a flavor/product
+      else if (flavorMap[key]) {
+        const { ptype, flavor } = flavorMap[key];
+        const packs = parseInt(value.replace(/[^\d]/g, '')) || 0;
+        if (!data.flavors) data.flavors = {};
+        data.flavors[`${ptype}-${flavor}`] = packs;
+      }
+    }
+  });
+
+  return data;
+}
+
+/** Fill form with parsed data */
+function fillFormWithData(data) {
+  // Fill basic fields
+  if (data.first_name) document.getElementById('first_name').value = data.first_name;
+  if (data.last_name) document.getElementById('last_name').value = data.last_name;
+  if (data.address) document.getElementById('address').value = data.address;
+  if (data.phone) document.getElementById('phone').value = data.phone;
+  if (data.amount) document.getElementById('amount').value = data.amount;
+  if (data.note) document.getElementById('note').value = data.note;
+
+  // Handle payment method
+  if (data.payment_method) {
+    const pm = data.payment_method.toUpperCase();
+    if (pm.includes('COD') || pm.includes('ปลายทาง')) {
+      document.getElementById('payment_method').value = 'COD';
+    } else if (pm.includes('TRANSFER') || pm.includes('โอน')) {
+      document.getElementById('payment_method').value = 'TRANSFER';
+    }
+  }
+
+  // Fill flavors
+  if (data.flavors) {
+    Object.keys(data.flavors).forEach(key => {
+      const el = document.getElementById(key);
+      if (el) el.value = data.flavors[key];
+    });
+  }
+}
 
 /** ส่งข้อมูลไป n8n */
 form.addEventListener('submit', async (e)=>{
