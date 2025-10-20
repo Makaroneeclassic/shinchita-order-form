@@ -517,6 +517,10 @@ form.addEventListener('submit', async (e)=>{
     phone: phoneDigits,
     amount: Number(fd.get('amount')),
     payment_method: fd.get('payment_method'), // TRANSFER / COD
+    shipping: fd.get('shipping') || '',
+    social_type: fd.get('social_type') || 'LINE',
+    social_name: fd.get('social_name') || '',
+    note: fd.get('note') || '',
     items
   };
 
