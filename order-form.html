@@ -140,6 +140,9 @@ Fb:ปนัดดา บุญส่งกุศลจิต"></textarea>
       <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="ชีส" id="roll-ชีส"></div>
       <div><label>คอร์นชีส</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="คอร์นชีส" id="roll-คอร์นชีส"></div>
     </div>
+    <div class="grid3">
+      <div><label>เจ</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="เจ" id="roll-เจ"></div>
+    </div>
 
     <h3>สาหร่ายทอดกรอบ (fried)</h3>
     <div class="grid3">
@@ -157,6 +160,9 @@ Fb:ปนัดดา บุญส่งกุศลจิต"></textarea>
       <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="ชีส" id="fried-ชีส"></div>
       <div><label>คอร์นชีส</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="คอร์นชีส" id="fried-คอร์นชีส"></div>
     </div>
+    <div class="grid3">
+      <div><label>เจ</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="เจ" id="fried-เจ"></div>
+    </div>
 
     <h3>สาหร่ายชุปแป้งทอด (battered)</h3>
     <div class="grid3">
@@ -173,6 +179,9 @@ Fb:ปนัดดา บุญส่งกุศลจิต"></textarea>
       <div><label>วาซาบิ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="วาซาบิ" id="battered-วาซาบิ"></div>
       <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="ชีส" id="battered-ชีส"></div>
       <div><label>คอร์นชีส</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="คอร์นชีส" id="battered-คอร์นชีส"></div>
+    </div>
+    <div class="grid3">
+      <div><label>เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="เจ" id="battered-เจ"></div>
     </div>
 
     <div class="card" style="background:#fafafa;border-style:dashed">
@@ -314,6 +323,9 @@ function parseAutofillData(text) {
     'corncheese': { flavors: { roll: 'คอร์นชีส', fried: 'คอร์นชีส', battered: 'คอร์นชีส' } },
     'ปาปริก้า': { flavors: { fried: 'ปาปริก้า', battered: 'ปาปริก้า' } },
     'paprika': { flavors: { fried: 'ปาปริก้า', battered: 'ปาปริก้า' } },
+    'เจ': { flavors: { roll: 'เจ', fried: 'เจ', battered: 'เจ' } },
+    'vegetarian': { flavors: { roll: 'เจ', fried: 'เจ', battered: 'เจ' } },
+    'veg': { flavors: { roll: 'เจ', fried: 'เจ', battered: 'เจ' } },
   };
 
   for (let i = 0; i < lines.length; i++) {
@@ -341,44 +353,48 @@ function parseAutofillData(text) {
       data.payment_method = 'COD';
     }
 
-    // Extract social media
-    const socialMatch = line.match(/(?:fb|facebook):\s*(.+)/i) || line.match(/(?:line):\s*(.+)/i);
+    // Extract social media (support both "FB:" and "FB :" formats)
+    const socialMatch = line.match(/(?:fb|facebook)\s*:\s*(.+)/i) || line.match(/(?:line)\s*:\s*(.+)/i);
     if (socialMatch && !data.social_name) {
       const socialName = socialMatch[1].trim();
       data.social_name = socialName;
-      if (lowerLine.startsWith('fb:') || lowerLine.includes('facebook:')) {
+      if (lowerLine.match(/fb\s*:/) || lowerLine.match(/facebook\s*:/)) {
         data.social_type = 'FB';
-      } else if (lowerLine.startsWith('line:')) {
+      } else if (lowerLine.match(/line\s*:/)) {
         data.social_type = 'LINE';
       }
       continue;
     }
 
-    // Extract shipping method
+    // Extract shipping method (strip leading numbers like "1. ไปรษณีย์" -> "ไปรษณีย์")
     const shippingKeywords = ['ไปรษณีย์', 'kerry', 'flash', 'j&t', 'scg', 'best', 'dhl', 'ems'];
     for (const keyword of shippingKeywords) {
       if (lowerLine.includes(keyword)) {
-        // Extract the shipping name (might be full text or just keyword)
+        // Extract the shipping name and strip leading numbers/dots
         if (!data.shipping) {
-          data.shipping = line.trim();
+          // Remove leading numbers and dots (e.g., "1. ไปรษณีย์" -> "ไปรษณีย์")
+          data.shipping = line.trim().replace(/^\d+\.\s*/, '');
           break;
         }
       }
     }
 
     // Extract product and flavor
-    // Pattern: "ชุบแป้งทอด เจ" or "รสดั้งเดิม 40 ห่อ"
+    // Pattern: "ชุบแป้งทอด เจ" or "รสดั้งเดิม 40 ห่อ" or multi-line format
     let foundProduct = false;
+
+    // Check if this line contains a product type (to set context for next lines)
     for (const [keyword, ptype] of Object.entries(productTypes)) {
       if (lowerLine.includes(keyword)) {
         foundProduct = true;
-        // Look for flavor in this line and next line
+        // Set current product type context
+        data.currentProductType = ptype;
+
+        // Look for flavor in this same line first
         for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
           if (lowerLine.includes(flavorKey.toLowerCase())) {
-            // Check if this flavor is available for this product type
             const flavor = flavorData.flavors[ptype];
             if (flavor) {
-              // Extract quantity
               const qtyMatch = line.match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
               if (qtyMatch) {
                 const qty = parseInt(qtyMatch[1]);
@@ -389,27 +405,29 @@ function parseAutofillData(text) {
             }
           }
         }
+        break;
+      }
+    }
 
-        // If no flavor found in this line, check next line
-        if (i + 1 < lines.length && Object.keys(data.flavors).length === 0) {
-          const nextLine = lines[i + 1].toLowerCase();
-          for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
-            if (nextLine.includes(flavorKey.toLowerCase())) {
-              const flavor = flavorData.flavors[ptype];
-              if (flavor) {
-                const qtyMatch = lines[i + 1].match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
-                if (qtyMatch) {
-                  const qty = parseInt(qtyMatch[1]);
-                  const key = `${ptype}-${flavor}`;
-                  data.flavors[key] = qty;
-                }
-                i++; // Skip next line as we've processed it
-                break;
-              }
+    // If we have a current product type context and this line has a flavor pattern
+    if (!foundProduct && data.currentProductType) {
+      // Check for flavor patterns like "รสดั้งเดิม 20" or "ดั้งเดิม 20" or "หม่าล่า 20"
+      for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
+        // Remove "รส" prefix if present
+        const cleanLine = lowerLine.replace(/^รส/, '');
+        if (cleanLine.includes(flavorKey.toLowerCase()) || lowerLine.includes(flavorKey.toLowerCase())) {
+          const flavor = flavorData.flavors[data.currentProductType];
+          if (flavor) {
+            const qtyMatch = line.match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
+            if (qtyMatch) {
+              const qty = parseInt(qtyMatch[1]);
+              const key = `${data.currentProductType}-${flavor}`;
+              data.flavors[key] = qty;
+              foundProduct = true;
+              break;
             }
           }
         }
-        break;
       }
     }
 
