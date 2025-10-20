@@ -453,17 +453,23 @@ function parseAutofillData(text) {
 
     // Extract name (usually first 1-2 lines, may have ~ or special chars)
     if (!nameFound && !foundProduct && !phoneMatch && !amountMatch && i < 3) {
-      // Remove numbers, special chars for name detection
-      const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/[~]/g, ' ').trim();
-      const nameParts = cleanLine.split(/\s+/).filter(p => p && !p.match(/^\d+$/));
+      // Skip lines that are shipping methods
+      const shippingNames = ['ไปรษณีย์', 'kerry', 'flash', 'j&t', 'scg', 'best', 'dhl', 'ems', 'post'];
+      const isShippingLine = shippingNames.some(keyword => lowerLine.includes(keyword));
 
-      if (nameParts.length > 0 && !lowerLine.includes('ไปรษณีย์') && !lowerLine.includes('post')) {
-        data.first_name = nameParts[0];
-        if (nameParts.length > 1) {
-          data.last_name = nameParts.slice(1).join(' ');
+      if (!isShippingLine) {
+        // Remove numbers, special chars for name detection
+        const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/[~]/g, ' ').trim();
+        const nameParts = cleanLine.split(/\s+/).filter(p => p && !p.match(/^\d+$/));
+
+        if (nameParts.length > 0) {
+          data.first_name = nameParts[0];
+          if (nameParts.length > 1) {
+            data.last_name = nameParts.slice(1).join(' ');
+          }
+          nameFound = true;
+          continue;
         }
-        nameFound = true;
-        continue;
       }
     }
 
