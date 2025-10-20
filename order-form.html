@@ -141,7 +141,8 @@ Fb:ปนัดดา บุญส่งกุศลจิต"></textarea>
       <div><label>คอร์นชีส</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="คอร์นชีส" id="roll-คอร์นชีส"></div>
     </div>
     <div class="grid3">
-      <div><label>เจ</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="เจ" id="roll-เจ"></div>
+      <div><label>หม่าล่า เจ</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="หม่าล่า เจ" id="roll-หม่าล่า เจ"></div>
+      <div><label>วาซาบิ เจ</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="วาซาบิ เจ" id="roll-วาซาบิ เจ"></div>
     </div>
 
     <h3>สาหร่ายทอดกรอบ (fried)</h3>
@@ -159,9 +160,6 @@ Fb:ปนัดดา บุญส่งกุศลจิต"></textarea>
       <div><label>วาซาบิ</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="วาซาบิ" id="fried-วาซาบิ"></div>
       <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="ชีส" id="fried-ชีส"></div>
       <div><label>คอร์นชีส</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="คอร์นชีส" id="fried-คอร์นชีส"></div>
-    </div>
-    <div class="grid3">
-      <div><label>เจ</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="เจ" id="fried-เจ"></div>
     </div>
 
     <h3>สาหร่ายชุปแป้งทอด (battered)</h3>
@@ -181,7 +179,9 @@ Fb:ปนัดดา บุญส่งกุศลจิต"></textarea>
       <div><label>คอร์นชีส</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="คอร์นชีส" id="battered-คอร์นชีส"></div>
     </div>
     <div class="grid3">
-      <div><label>เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="เจ" id="battered-เจ"></div>
+      <div><label>ดั้งเดิม เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="ดั้งเดิม เจ" id="battered-ดั้งเดิม เจ"></div>
+      <div><label>หม่าล่า เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="หม่าล่า เจ" id="battered-หม่าล่า เจ"></div>
+      <div><label>วาซาบิ เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="วาซาบิ เจ" id="battered-วาซาบิ เจ"></div>
     </div>
 
     <div class="card" style="background:#fafafa;border-style:dashed">
@@ -323,9 +323,13 @@ function parseAutofillData(text) {
     'corncheese': { flavors: { roll: 'คอร์นชีส', fried: 'คอร์นชีส', battered: 'คอร์นชีส' } },
     'ปาปริก้า': { flavors: { fried: 'ปาปริก้า', battered: 'ปาปริก้า' } },
     'paprika': { flavors: { fried: 'ปาปริก้า', battered: 'ปาปริก้า' } },
-    'เจ': { flavors: { roll: 'เจ', fried: 'เจ', battered: 'เจ' } },
-    'vegetarian': { flavors: { roll: 'เจ', fried: 'เจ', battered: 'เจ' } },
-    'veg': { flavors: { roll: 'เจ', fried: 'เจ', battered: 'เจ' } },
+    // Vegetarian variants
+    'ดั้งเดิม เจ': { flavors: { battered: 'ดั้งเดิม เจ' } },
+    'หม่าล่า เจ': { flavors: { roll: 'หม่าล่า เจ', battered: 'หม่าล่า เจ' } },
+    'วาซาบิ เจ': { flavors: { roll: 'วาซาบิ เจ', battered: 'วาซาบิ เจ' } },
+    'mala veg': { flavors: { roll: 'หม่าล่า เจ', battered: 'หม่าล่า เจ' } },
+    'wasabi veg': { flavors: { roll: 'วาซาบิ เจ', battered: 'วาซาบิ เจ' } },
+    'original veg': { flavors: { battered: 'ดั้งเดิม เจ' } },
   };
 
   for (let i = 0; i < lines.length; i++) {
@@ -390,6 +394,13 @@ function parseAutofillData(text) {
         // Set current product type context
         data.currentProductType = ptype;
 
+        // Check if this line also contains "เจ" (vegetarian indicator)
+        if (lowerLine.includes('เจ') || lowerLine.includes('veg')) {
+          data.isVegetarian = true;
+        } else {
+          data.isVegetarian = false;
+        }
+
         // Look for flavor in this same line first
         for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
           if (lowerLine.includes(flavorKey.toLowerCase())) {
@@ -412,19 +423,28 @@ function parseAutofillData(text) {
     // If we have a current product type context and this line has a flavor pattern
     if (!foundProduct && data.currentProductType) {
       // Check for flavor patterns like "รสดั้งเดิม 20" or "ดั้งเดิม 20" or "หม่าล่า 20"
-      for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
-        // Remove "รส" prefix if present
+      const baseFlavors = ['ดั้งเดิม', 'หม่าล่า', 'วาซาบิ', 'เผ็ด', 'บาร์บีคิว', 'ปลาหมึก', 'ต้มยำ', 'ชีส', 'คอร์นชีส', 'ปาปริก้า'];
+
+      for (const baseFlavor of baseFlavors) {
         const cleanLine = lowerLine.replace(/^รส/, '');
-        if (cleanLine.includes(flavorKey.toLowerCase()) || lowerLine.includes(flavorKey.toLowerCase())) {
-          const flavor = flavorData.flavors[data.currentProductType];
-          if (flavor) {
-            const qtyMatch = line.match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
-            if (qtyMatch) {
-              const qty = parseInt(qtyMatch[1]);
-              const key = `${data.currentProductType}-${flavor}`;
-              data.flavors[key] = qty;
-              foundProduct = true;
-              break;
+        if (cleanLine.includes(baseFlavor.toLowerCase())) {
+          // If vegetarian flag is set, append "เจ" to flavor name
+          const flavorName = data.isVegetarian ? `${baseFlavor} เจ` : baseFlavor;
+          const flavorKey = data.isVegetarian ? `${baseFlavor} เจ` : baseFlavor;
+
+          // Check if this flavor exists in flavorKeywords
+          const flavorData = flavorKeywords[flavorKey];
+          if (flavorData) {
+            const flavor = flavorData.flavors[data.currentProductType];
+            if (flavor) {
+              const qtyMatch = line.match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
+              if (qtyMatch) {
+                const qty = parseInt(qtyMatch[1]);
+                const key = `${data.currentProductType}-${flavor}`;
+                data.flavors[key] = qty;
+                foundProduct = true;
+                break;
+              }
             }
           }
         }
