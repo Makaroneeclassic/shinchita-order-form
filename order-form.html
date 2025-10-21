@@ -49,10 +49,17 @@
     <h2>✨ วางข้อมูลเพื่อกรอกอัตโนมัติ</h2>
     <label>วางข้อความที่คัดลอกมาในช่องนี้ (รองรับหลายรูปแบบ)</label>
     <textarea id="autofillInput" rows="10" placeholder="ตัวอย่าง:
-ชุบแป้งทอด คละรส 20
-หรือ
+ปนัดดา  ~  โอ๋
+511/730  หมู่บ้านจรัลวิลล่า 3
+แขวงบางขุนศรี  เขตบางกอกน้อย  กรุงเทพ  10700
+โทร  0944951790
+
 ชุบแป้งทอด
-คละรส 20"></textarea>
+รสดั้งเดิม 40 ห่อ
+
+ไปรษณีย์
+ส่ง 13/10/68 โอน 640 B
+Fb:ปนัดดา บุญส่งกุศลจิต"></textarea>
     <div class="bar">
       <button type="button" class="btn secondary" id="btnAutofill">กรอกอัตโนมัติ</button>
       <button type="button" class="btn ghost" id="btnClearAutofill">ล้างช่อง</button>
@@ -117,9 +124,7 @@
 
     <h2>สินค้าและรสชาติ (กรอกจำนวนห่อ)</h2>
 
-    <!-- ROLL -->
     <h3>สาหร่ายม้วน (roll)</h3>
-    <!-- รสปกติ -->
     <div class="grid3">
       <div><label>ดั้งเดิม</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="ดั้งเดิม" id="roll-ดั้งเดิม"></div>
       <div><label>เผ็ด</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="เผ็ด" id="roll-เผ็ด"></div>
@@ -138,13 +143,9 @@
     <div class="grid3">
       <div><label>หม่าล่า เจ</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="หม่าล่า เจ" id="roll-หม่าล่า เจ"></div>
       <div><label>วาซาบิ เจ</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="วาซาบิ เจ" id="roll-วาซาบิ เจ"></div>
-      <div><label>คละรส</label><input type="number" min="0" value="0" data-ptype="roll" data-flavor="คละรส" id="roll-คละรส"></div>
-    </div>
     </div>
 
-    <!-- FRIED -->
     <h3>สาหร่ายทอดกรอบ (fried)</h3>
-    <!-- รสปกติ -->
     <div class="grid3">
       <div><label>ดั้งเดิม</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="ดั้งเดิม" id="fried-ดั้งเดิม"></div>
       <div><label>เผ็ด</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="เผ็ด" id="fried-เผ็ด"></div>
@@ -159,12 +160,9 @@
       <div><label>วาซาบิ</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="วาซาบิ" id="fried-วาซาบิ"></div>
       <div><label>ชีส</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="ชีส" id="fried-ชีส"></div>
       <div><label>คอร์นชีส</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="คอร์นชีส" id="fried-คอร์นชีส"></div>
-      <div><label>คละรส</label><input type="number" min="0" value="0" data-ptype="fried" data-flavor="คละรส" id="fried-คละรส"></div>
     </div>
 
-    <!-- BATTERED -->
     <h3>สาหร่ายชุปแป้งทอด (battered)</h3>
-    <!-- รสปกติ -->
     <div class="grid3">
       <div><label>ดั้งเดิม</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="ดั้งเดิม" id="battered-ดั้งเดิม"></div>
       <div><label>เผ็ด</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="เผ็ด" id="battered-เผ็ด"></div>
@@ -184,7 +182,6 @@
       <div><label>ดั้งเดิม เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="ดั้งเดิม เจ" id="battered-ดั้งเดิม เจ"></div>
       <div><label>หม่าล่า เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="หม่าล่า เจ" id="battered-หม่าล่า เจ"></div>
       <div><label>วาซาบิ เจ</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="วาซาบิ เจ" id="battered-วาซาบิ เจ"></div>
-      <div><label>คละรส</label><input type="number" min="0" value="0" data-ptype="battered" data-flavor="คละรส" id="battered-คละรส"></div>
     </div>
 
     <div class="card" style="background:#fafafa;border-style:dashed">
@@ -207,6 +204,18 @@
       <li>นำไปแทนในตัวแปร <code>WEBHOOK_URL</code> ด้านล่างในสคริปต์</li>
       <li>เปิดไฟล์นี้ในเบราว์เซอร์ กรอก แล้วกด "ส่งออเดอร์"</li>
     </ol>
+    <h3>✨ การใช้ฟีเจอร์กรอกอัตโนมัติ</h3>
+    <ol>
+      <li>คัดลอกข้อมูลจากที่ต้องการ (LINE, Email, etc.)</li>
+      <li>วางในช่อง "วางข้อมูลเพื่อกรอกอัตโนมัติ"</li>
+      <li>กดปุ่ม "กรอกอัตโนมัติ" ระบบจะแยกข้อมูลและกรอกให้อัตโนมัติ</li>
+    </ol>
+    <h4>รูปแบบที่รองรับ:</h4>
+    <ul>
+      <li><code>ชื่อ: สมชาย</code> หรือ <code>ชื่อ สมชาย</code></li>
+      <li><code>หมาล่า: 2</code> หรือ <code>หมาล่า 2</code> หรือ <code>หมาล่า 2 ห่อ</code></li>
+      <li>ระบบจะอ่านทั้งไทยและอังกฤษ (first_name, last_name, etc.)</li>
+    </ul>
   </div>
 </div>
 
@@ -228,11 +237,9 @@ const autofillMsg = document.getElementById('autofillMsg');
 function updateSummary(){
   const inputs = Array.from(document.querySelectorAll('input[data-ptype]'));
   const items = inputs
-    .map(el => ({ product_type: el.dataset.ptype, flavor: el.dataset.flavor, packs: Number(el.value || 0) } ))
+    .map(el => ({ product_type: el.dataset.ptype, flavor: el.dataset.flavor, packs: Number(el.value || 0) }))
     .filter(x => x.packs > 0);
-
   if(!items.length){ summary.innerHTML = 'ยังไม่มียอดห่อ'; return; }
-
   const total = items.reduce((s,x)=>s+x.packs,0);
   const lines = items.map(x=>`${x.product_type} – ${x.flavor}: ${x.packs} ห่อ`);
   summary.innerHTML = `<span class="total">รวม ${total} ห่อ</span><br>${lines.join('<br>')}`;
@@ -245,34 +252,41 @@ btnClear.addEventListener('click', ()=>{
   updateSummary();
   msg.innerHTML = '';
 });
+
 btnClearAutofill.addEventListener('click', ()=>{
   autofillInput.value = '';
   autofillMsg.innerHTML = '';
 });
 
-/** Auto-fill */
+/** Auto-fill Logic */
 btnAutofill.addEventListener('click', ()=>{
   const text = autofillInput.value.trim();
   if(!text){
     autofillMsg.innerHTML = '<div class="err">โปรดวางข้อมูลก่อนกดกรอกอัตโนมัติ</div>';
     return;
   }
+
   autofillMsg.innerHTML = '<div class="muted">กำลังประมวลผล...</div>';
+
   try {
     const data = parseAutofillData(text);
     fillFormWithData(data);
-    autofillMsg.innerHTML = `<div class="ok">กรอกข้อมูลสำเร็จ!</div>`;
+    autofillMsg.innerHTML = `<div class="ok">กรอกข้อมูลสำเร็จ! พบ ${Object.keys(data).length} ฟิลด์</div>`;
     updateSummary();
   } catch(err) {
     autofillMsg.innerHTML = `<div class="err">เกิดข้อผิดพลาด: ${err.message}</div>`;
   }
 });
 
-/** ---------- Parser (ตัดมาเฉพาะส่วนที่เกี่ยวกับคละรส) ---------- */
+/** Parse text to extract data */
 function parseAutofillData(text) {
   const data = { flavors: {} };
   const lines = text.split('\n').map(l => l.trim()).filter(l => l);
 
+  let addressLines = [];
+  let nameFound = false;
+
+  // Product type keywords
   const productTypes = {
     'ชุบแป้งทอด': 'battered',
     'ชุปแป้งทอด': 'battered',
@@ -283,56 +297,237 @@ function parseAutofillData(text) {
     'fried': 'fried',
   };
 
-  // เพิ่ม mapping "คละรส"
+  // Flavor keywords with flexible matching
+  // Note: Will try to match based on product type context
   const flavorKeywords = {
-    'คละรส': { flavors: { roll: 'คละรส', fried: 'คละรส', battered: 'คละรส' } },
-    // (รสอื่น ๆ ของคุณจะใส่ต่อได้ที่นี่เหมือนโค้ดเดิม)
+    // สาหร่ายม้วน (roll)
+    'ดั้งเดิม': { flavors: { roll: 'ดั้งเดิม', fried: 'ดั้งเดิม', battered: 'ดั้งเดิม' } },
+    'original': { flavors: { roll: 'ดั้งเดิม', fried: 'ดั้งเดิม', battered: 'ดั้งเดิม' } },
+    'เผ็ด': { flavors: { roll: 'เผ็ด', fried: 'เผ็ด', battered: 'เผ็ด' } },
+    'spicy': { flavors: { roll: 'เผ็ด', fried: 'เผ็ด', battered: 'เผ็ด' } },
+    'บาร์บีคิว': { flavors: { roll: 'บาร์บีคิว', fried: 'บาร์บีคิว', battered: 'บาร์บีคิว' } },
+    'bbq': { flavors: { roll: 'บาร์บีคิว', fried: 'บาร์บีคิว', battered: 'บาร์บีคิว' } },
+    'barbecue': { flavors: { roll: 'บาร์บีคิว', fried: 'บาร์บีคิว', battered: 'บาร์บีคิว' } },
+    'ปลาหมึก': { flavors: { roll: 'ปลาหมึก' } },
+    'squid': { flavors: { roll: 'ปลาหมึก' } },
+    'หม่าล่า': { flavors: { roll: 'หม่าล่า', fried: 'หม่าล่า', battered: 'หม่าล่า' } },
+    'mala': { flavors: { roll: 'หม่าล่า', fried: 'หม่าล่า', battered: 'หม่าล่า' } },
+    'ต้มยำ': { flavors: { roll: 'ต้มยำ', fried: 'ต้มยำ', battered: 'ต้มยำ' } },
+    'tomyum': { flavors: { roll: 'ต้มยำ', fried: 'ต้มยำ', battered: 'ต้มยำ' } },
+    'วาซาบิ': { flavors: { roll: 'วาซาบิ', fried: 'วาซาบิ', battered: 'วาซาบิ' } },
+    'wasabi': { flavors: { roll: 'วาซาบิ', fried: 'วาซาบิ', battered: 'วาซาบิ' } },
+    'ชีส': { flavors: { roll: 'ชีส', fried: 'ชีส', battered: 'ชีส' } },
+    'cheese': { flavors: { roll: 'ชีส', fried: 'ชีส', battered: 'ชีส' } },
+    'คอร์นชีส': { flavors: { roll: 'คอร์นชีส', fried: 'คอร์นชีส', battered: 'คอร์นชีส' } },
+    'corn cheese': { flavors: { roll: 'คอร์นชีส', fried: 'คอร์นชีส', battered: 'คอร์นชีส' } },
+    'corncheese': { flavors: { roll: 'คอร์นชีส', fried: 'คอร์นชีส', battered: 'คอร์นชีส' } },
+    'ปาปริก้า': { flavors: { fried: 'ปาปริก้า', battered: 'ปาปริก้า' } },
+    'paprika': { flavors: { fried: 'ปาปริก้า', battered: 'ปาปริก้า' } },
+    // Vegetarian variants
+    'ดั้งเดิม เจ': { flavors: { battered: 'ดั้งเดิม เจ' } },
+    'หม่าล่า เจ': { flavors: { roll: 'หม่าล่า เจ', battered: 'หม่าล่า เจ' } },
+    'วาซาบิ เจ': { flavors: { roll: 'วาซาบิ เจ', battered: 'วาซาบิ เจ' } },
+    'mala veg': { flavors: { roll: 'หม่าล่า เจ', battered: 'หม่าล่า เจ' } },
+    'wasabi veg': { flavors: { roll: 'วาซาบิ เจ', battered: 'วาซาบิ เจ' } },
+    'original veg': { flavors: { battered: 'ดั้งเดิม เจ' } },
   };
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i], lowerLine = line.toLowerCase();
+    const line = lines[i];
+    const lowerLine = line.toLowerCase();
 
-    // ตรวจเจอหมวด
-    let matchedType = null;
+    // Extract phone number (10 digits)
+    const phoneMatch = line.match(/(?:โทร|tel|phone)?\s*:?\s*(\d{10})/i) || line.match(/(\d{10})/);
+    if (phoneMatch && !data.phone) {
+      data.phone = phoneMatch[1];
+      continue;
+    }
+
+    // Extract amount (with B or บาท)
+    const amountMatch = line.match(/(\d+(?:,\d{3})*(?:\.\d{2})?)\s*(?:B|บาท|baht)/i);
+    if (amountMatch && !data.amount) {
+      data.amount = amountMatch[1].replace(/,/g, '');
+      continue;
+    }
+
+    // Extract payment method
+    if ((lowerLine.includes('โอน') || lowerLine.includes('transfer')) && !data.payment_method) {
+      data.payment_method = 'TRANSFER';
+    } else if ((lowerLine.includes('cod') || lowerLine.includes('ปลายทาง')) && !data.payment_method) {
+      data.payment_method = 'COD';
+    }
+
+    // Extract social media (support both "FB:" and "FB :" formats)
+    const socialMatch = line.match(/(?:fb|facebook)\s*:\s*(.+)/i) || line.match(/(?:line)\s*:\s*(.+)/i);
+    if (socialMatch && !data.social_name) {
+      const socialName = socialMatch[1].trim();
+      data.social_name = socialName;
+      if (lowerLine.match(/fb\s*:/) || lowerLine.match(/facebook\s*:/)) {
+        data.social_type = 'FB';
+      } else if (lowerLine.match(/line\s*:/)) {
+        data.social_type = 'LINE';
+      }
+      continue;
+    }
+
+    // Extract shipping method (strip leading numbers like "1. ไปรษณีย์" -> "ไปรษณีย์")
+    const shippingKeywords = ['ไปรษณีย์', 'kerry', 'flash', 'j&t', 'scg', 'best', 'dhl', 'ems'];
+    for (const keyword of shippingKeywords) {
+      if (lowerLine.includes(keyword)) {
+        // Extract the shipping name and strip leading numbers/dots
+        if (!data.shipping) {
+          // Remove leading numbers and dots (e.g., "1. ไปรษณีย์" -> "ไปรษณีย์")
+          data.shipping = line.trim().replace(/^\d+\.\s*/, '');
+          break;
+        }
+      }
+    }
+
+    // Extract product and flavor
+    // Pattern: "ชุบแป้งทอด เจ" or "รสดั้งเดิม 40 ห่อ" or multi-line format
+    let foundProduct = false;
+
+    // Check if this line contains a product type (to set context for next lines)
     for (const [keyword, ptype] of Object.entries(productTypes)) {
-      if (lowerLine.includes(keyword)) { matchedType = ptype; break; }
-    }
-    if (matchedType) {
-      // เคส 1: บรรทัดเดียว "ชุบแป้งทอด คละรส 20"
-      const mixedInline = /คละรส\s*(\d+)\s*(?:ห่อ|pack|packs)?/i.exec(line);
-      if (mixedInline) {
-        const qty = parseInt(mixedInline[1]);
-        if (qty > 0) {
-          const key = `${matchedType}-คละรส`;
-          data.flavors[key] = (data.flavors[key] || 0) + qty;
+      if (lowerLine.includes(keyword)) {
+        foundProduct = true;
+        // Set current product type context
+        data.currentProductType = ptype;
+
+        // Check if this line also contains "เจ" (vegetarian indicator)
+        if (lowerLine.includes('เจ') || lowerLine.includes('veg')) {
+          data.isVegetarian = true;
+        } else {
+          data.isVegetarian = false;
         }
-        continue;
-      }
-      // เคส 2: บรรทัดถัดไป "คละรส 20"
-      const next = lines[i+1] || '';
-      const mixedNext = /คละรส\s*(\d+)\s*(?:ห่อ|pack|packs)?/i.exec(next);
-      if (mixedNext) {
-        const qty = parseInt(mixedNext[1]);
-        if (qty > 0) {
-          const key = `${matchedType}-คละรส`;
-          data.flavors[key] = (data.flavors[key] || 0) + qty;
+
+        // Look for flavor in this same line first
+        for (const [flavorKey, flavorData] of Object.entries(flavorKeywords)) {
+          if (lowerLine.includes(flavorKey.toLowerCase())) {
+            const flavor = flavorData.flavors[ptype];
+            if (flavor) {
+              const qtyMatch = line.match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
+              if (qtyMatch) {
+                const qty = parseInt(qtyMatch[1]);
+                const key = `${ptype}-${flavor}`;
+                data.flavors[key] = qty;
+              }
+              break;
+            }
+          }
         }
-        i += 1; // ข้ามบรรทัดถัดไปแล้ว
-        continue;
+        break;
       }
     }
+
+    // If we have a current product type context and this line has a flavor pattern
+    if (!foundProduct && data.currentProductType) {
+      // Check for flavor patterns like "รสดั้งเดิม 20" or "ดั้งเดิม 20" or "หม่าล่า 20"
+      const baseFlavors = ['ดั้งเดิม', 'หม่าล่า', 'วาซาบิ', 'เผ็ด', 'บาร์บีคิว', 'ปลาหมึก', 'ต้มยำ', 'ชีส', 'คอร์นชีส', 'ปาปริก้า'];
+
+      for (const baseFlavor of baseFlavors) {
+        const cleanLine = lowerLine.replace(/^รส/, '');
+        if (cleanLine.includes(baseFlavor.toLowerCase())) {
+          // If vegetarian flag is set, append "เจ" to flavor name
+          const flavorName = data.isVegetarian ? `${baseFlavor} เจ` : baseFlavor;
+          const flavorKey = data.isVegetarian ? `${baseFlavor} เจ` : baseFlavor;
+
+          // Check if this flavor exists in flavorKeywords
+          const flavorData = flavorKeywords[flavorKey];
+          if (flavorData) {
+            const flavor = flavorData.flavors[data.currentProductType];
+            if (flavor) {
+              const qtyMatch = line.match(/(\d+)\s*(?:ห่อ|pack|packs)?/);
+              if (qtyMatch) {
+                const qty = parseInt(qtyMatch[1]);
+                const key = `${data.currentProductType}-${flavor}`;
+                data.flavors[key] = qty;
+                foundProduct = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Extract name (usually first 1-2 lines, may have ~ or special chars)
+    if (!nameFound && !foundProduct && !phoneMatch && !amountMatch && i < 3) {
+      // Skip lines that are shipping methods
+      const shippingNames = ['ไปรษณีย์', 'kerry', 'flash', 'j&t', 'scg', 'best', 'dhl', 'ems', 'post'];
+      const isShippingLine = shippingNames.some(keyword => lowerLine.includes(keyword));
+
+      if (!isShippingLine) {
+        // Remove numbers, special chars for name detection
+        const cleanLine = line.replace(/^\d+\.\s*/, '').replace(/[~]/g, ' ').trim();
+        const nameParts = cleanLine.split(/\s+/).filter(p => p && !p.match(/^\d+$/));
+
+        if (nameParts.length > 0) {
+          data.first_name = nameParts[0];
+          if (nameParts.length > 1) {
+            data.last_name = nameParts.slice(1).join(' ');
+          }
+          nameFound = true;
+          continue;
+        }
+      }
+    }
+
+    // Collect address lines (between name and phone)
+    if (nameFound && !data.phone && !foundProduct) {
+      // Skip lines with FB:, Fb:, facebook
+      if (!lowerLine.startsWith('fb:') && !lowerLine.startsWith('facebook')) {
+        addressLines.push(line);
+      }
+    }
+  }
+
+  // Combine address lines
+  if (addressLines.length > 0) {
+    data.address = addressLines.join(' ');
   }
 
   return data;
 }
 
-/** เติมค่าลงฟอร์ม */
+/** Fill form with parsed data */
 function fillFormWithData(data) {
-  // flavors → ใส่ตรง id เลย
+  // Fill basic fields
+  if (data.first_name) document.getElementById('first_name').value = data.first_name;
+  if (data.last_name) document.getElementById('last_name').value = data.last_name;
+  if (data.address) document.getElementById('address').value = data.address;
+  if (data.phone) document.getElementById('phone').value = data.phone;
+  if (data.amount) document.getElementById('amount').value = data.amount;
+  if (data.note) document.getElementById('note').value = data.note;
+  if (data.shipping) document.getElementById('shipping').value = data.shipping;
+
+  // Handle payment method
+  if (data.payment_method) {
+    const pm = data.payment_method.toUpperCase();
+    if (pm.includes('COD') || pm.includes('ปลายทาง')) {
+      document.getElementById('payment_method').value = 'COD';
+    } else if (pm.includes('TRANSFER') || pm.includes('โอน')) {
+      document.getElementById('payment_method').value = 'TRANSFER';
+    }
+  }
+
+  // Handle social media
+  if (data.social_name) {
+    document.getElementById('social_name').value = data.social_name;
+  }
+  if (data.social_type) {
+    if (data.social_type === 'FB') {
+      document.getElementById('social_fb').checked = true;
+    } else if (data.social_type === 'LINE') {
+      document.getElementById('social_line').checked = true;
+    }
+  }
+
+  // Fill flavors
   if (data.flavors) {
-    Object.entries(data.flavors).forEach(([key, qty])=>{
+    Object.keys(data.flavors).forEach(key => {
       const el = document.getElementById(key);
-      if (el) el.value = qty;
+      if (el) el.value = data.flavors[key];
     });
   }
 }
@@ -342,10 +537,11 @@ form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   msg.innerHTML = '';
 
+  // เก็บข้อมูล
   const fd = new FormData(form);
   const inputs = Array.from(document.querySelectorAll('input[data-ptype]'));
   const rawPhone = String(fd.get('phone')||'');
-  const phoneDigits = rawPhone.replace(/\D/g,'');
+  const phoneDigits = rawPhone.replace(/\D/g,'');     // เก็บเฉพาะตัวเลข ให้ตรงกับ Normalize node
 
   const items = inputs.map(el => ({
     product_type: el.dataset.ptype,
@@ -359,12 +555,12 @@ form.addEventListener('submit', async (e)=>{
   }
 
   const payload = {
-    first_name: fd.get('first_name') || '',
-    last_name: fd.get('last_name') || '',
-    address: fd.get('address') || '',
+    first_name: fd.get('first_name'),
+    last_name: fd.get('last_name'),
+    address: fd.get('address'),
     phone: phoneDigits,
-    amount: Number(fd.get('amount')||0),
-    payment_method: fd.get('payment_method') || 'TRANSFER',
+    amount: Number(fd.get('amount')),
+    payment_method: fd.get('payment_method'), // TRANSFER / COD
     shipping: fd.get('shipping') || '',
     social_type: fd.get('social_type') || 'LINE',
     social_name: fd.get('social_name') || '',
@@ -372,13 +568,17 @@ form.addEventListener('submit', async (e)=>{
     items
   };
 
+  // ป้องกันกดซ้ำ
   btnSubmit.disabled = true; btnSubmit.textContent = 'กำลังส่ง...';
+
   try{
     const res = await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
+
+    // n8n Respond node จะตอบ { ok: true, orderId: "..." }
     const data = await res.json().catch(()=> ({}));
 
     if(res.ok && data && data.ok){
